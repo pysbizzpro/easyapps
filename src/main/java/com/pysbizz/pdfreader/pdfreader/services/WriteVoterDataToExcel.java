@@ -11,10 +11,13 @@ import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
+import com.pysbizz.pdfreader.pdfreader.PdfReaderController;
 import com.pysbizz.pdfreader.pdfreader.model.VoterData;
 
 
 public class WriteVoterDataToExcel {
+	public static String outputPath = "";
+	public static File outputfile;
    public static void write(List<VoterData> voterData ) throws Exception {
 
       //Create blank workbook
@@ -55,10 +58,11 @@ public class WriteVoterDataToExcel {
       }
       
       //Write the workbook in file system
-      FileOutputStream out = new FileOutputStream(
-         new File(Utils.outputFileLocation+"/Writesheet_"+System.currentTimeMillis()+".xlsx"));
-      
+      outputfile = new File(PdfReaderController.UPLOADED_FOLDER+"/Writesheet_"+System.currentTimeMillis()+".xlsx");
+      FileOutputStream out = new FileOutputStream(outputfile);
       workbook.write(out);
+      outputPath = outputfile.getAbsolutePath();
+      System.out.println("abslut "+outputfile.getAbsolutePath());
       out.close();
       System.out.println("Writesheet.xlsx written successfully");
    }

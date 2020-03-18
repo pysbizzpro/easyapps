@@ -9,6 +9,7 @@ import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.text.PDFTextStripper;
 import org.springframework.stereotype.Service;
 
+import com.pysbizz.pdfreader.pdfreader.PdfReaderController;
 import com.pysbizz.pdfreader.pdfreader.model.VoterData;
 
 
@@ -29,7 +30,7 @@ public class PDFReader {
 		
 
 
-		try (PDDocument document = PDDocument.load(new File(Utils.inputFileLocation))) {
+		try (PDDocument document = PDDocument.load(new File(PdfReaderController.UPLOADED_FOLDER))) {
 
             document.getClass();
 
