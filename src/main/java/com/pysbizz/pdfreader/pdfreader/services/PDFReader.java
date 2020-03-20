@@ -1,15 +1,17 @@
 package com.pysbizz.pdfreader.pdfreader.services;
 
-import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.text.PDFTextStripper;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
-import com.pysbizz.pdfreader.pdfreader.PdfReaderController;
 import com.pysbizz.pdfreader.pdfreader.model.VoterData;
 
 
@@ -18,22 +20,25 @@ public class PDFReader {
 
 	public static void main(String[] args){
 		
-		try {
-			new PDFReader().readPDFData();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+		/*
+		 * try { //new PDFReader().readPDFData(); } catch (IOException e) {
+		 * e.printStackTrace(); }
+		 */
 	}
 	
 	
-	public void readPDFData() throws IOException {
+	public String readPDFData(byte[] bytes,String formats) throws IOException {
 		
+        String outputPath="";
+      //  MultipartFile file = null;
+        //file.getOriginalFilename().replace(".pdf",".xlsx");
+		//try (PDDocument document = PDDocument.load(new File(PdfReaderController.UPLOADED_FOLDER))) {
 
-
-		try (PDDocument document = PDDocument.load(new File(PdfReaderController.UPLOADED_FOLDER))) {
-
-            document.getClass();
-
+		try (PDDocument document = PDDocument.load(bytes)) {
+  
+		document.getClass();
+		
+		
             if (!document.isEncrypted()) {
 			
 				/*
@@ -58,11 +63,15 @@ public class PDFReader {
 				// split by whitespace
                 String lines[] = pdfFileInText.split("\\r?\\n");
                 List<VoterData> voterDataList = new ArrayList<>();                 
-                senario1(lines,voterDataList);
-               // senario2(lines,voterDataList);
+               
+                if("format1".equalsIgnoreCase(formats)) {
+                	senario1(lines,voterDataList);
+                }else if("format2".equalsIgnoreCase(formats)) {
+                	senario2(lines,voterDataList);
+                }
                 	
                 	try {
-						WriteVoterDataToExcel.write(voterDataList);
+                		outputPath = WriteVoterDataToExcel.write(voterDataList);
 					} catch (Exception e) {
 						e.printStackTrace();
 					}
@@ -76,6 +85,7 @@ public class PDFReader {
             }
 
         }
+		return outputPath;
 	}
 	
 	private void senario1(String lines[], List<VoterData> voterDataList) {

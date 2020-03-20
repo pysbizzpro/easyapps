@@ -28,21 +28,11 @@ public class PdfReaderController {
 	  public String isApplicationUp() {
 		return "upload";
 	}
-	@GetMapping("/trnsformpdf")
-	  public String trnsformPdf() {
-		PDFReader pdfReader = new PDFReader();
-		try {
-			pdfReader.readPDFData();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		return "Application is running";
-	}
+
 	
 	 @PostMapping("/upload") // //new annotation since 4.3
 	 public ResponseEntity<Resource> singleFileUpload(@RequestParam("file") MultipartFile file,
-	                                   RedirectAttributes redirectAttributes) {
+	                                   RedirectAttributes redirectAttributes,@RequestParam("formats") String formats) {
 
 		
 	        if (file.isEmpty()) {
@@ -61,8 +51,10 @@ public class PdfReaderController {
 	                    "You successfully uploaded '" + file.getOriginalFilename() + "'");
 
 	        	PDFReader pdfReader = new PDFReader();
-	    		try {
-	    			pdfReader.readPDFData();
+	    		
+	        	String fileOutPath = null;
+	        	try {
+	        		fileOutPath = pdfReader.readPDFData(bytes,formats);
 	    		} catch (IOException e) {
 	    			// TODO Auto-generated catch block
 	    			e.printStackTrace();
@@ -70,13 +62,14 @@ public class PdfReaderController {
 
 	        //return "redirect:/uploadStatus";
 	        HttpHeaders headers = new HttpHeaders();
-	        Path outputPath = Paths.get(WriteVoterDataToExcel.outputfile.getAbsolutePath());
+	        headers.add("Content-Disposition", String.format("inline; filename=\"" + file.getOriginalFilename().replace(".pdf",".xlsx") + "\""));
+	        Path outputPath = Paths.get(fileOutPath);
 	        ByteArrayResource resource = new ByteArrayResource(Files.readAllBytes(outputPath));
-
+	 
 	        return ResponseEntity.ok()
 	                .headers(headers)
 	                .contentLength(WriteVoterDataToExcel.outputfile.length())
-	                .contentType(MediaType.parseMediaType("application/octet-stream"))
+	                .contentType(MediaType.parseMediaType(Files.probeContentType(outputPath)))
 	                .body(resource);
 	        } catch (IOException e) {
 	            e.printStackTrace();

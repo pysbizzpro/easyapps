@@ -6,6 +6,11 @@
 
 <form method="POST" action="/upload" enctype="multipart/form-data">
     <input type="file" name="file" /><br/><br/>
+    <input type="radio" id="format1" name="formats" value="format1">
+	<label for="male">format1: Example file formats, A0400013.pdf</label><br>
+	<input type="radio" id="format2" name="formats" value="format2" checked>
+	<label for="format2">format2: Example file formats,CAP008.pdf,CAP009.pdf </label><br>
+    
     <input type="submit" value="Submit" />
 </form>
 

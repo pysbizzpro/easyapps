@@ -18,7 +18,7 @@ import com.pysbizz.pdfreader.pdfreader.model.VoterData;
 public class WriteVoterDataToExcel {
 	public static String outputPath = "";
 	public static File outputfile;
-   public static void write(List<VoterData> voterData ) throws Exception {
+   public static String write(List<VoterData> voterData ) throws Exception {
 
       //Create blank workbook
       XSSFWorkbook workbook = new XSSFWorkbook();
@@ -58,6 +58,7 @@ public class WriteVoterDataToExcel {
       }
       
       //Write the workbook in file system
+      String outputFileLocation = PdfReaderController.UPLOADED_FOLDER+"/Writesheet_"+System.currentTimeMillis()+".xlsx";
       outputfile = new File(PdfReaderController.UPLOADED_FOLDER+"/Writesheet_"+System.currentTimeMillis()+".xlsx");
       FileOutputStream out = new FileOutputStream(outputfile);
       workbook.write(out);
@@ -65,5 +66,6 @@ public class WriteVoterDataToExcel {
       System.out.println("abslut "+outputfile.getAbsolutePath());
       out.close();
       System.out.println("Writesheet.xlsx written successfully");
+      return outputFileLocation;
    }
 }
